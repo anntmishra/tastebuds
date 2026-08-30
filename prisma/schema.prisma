@@ -1,0 +1,110 @@
+// Taste Buds data model. See taste-buds/03-Architecture.md.
+//
+// Auth stays on the JWT session strategy (Spotify tokens ride in the JWT).
+// On sign-in we upsert a `User` row by spotifyId so blends can reference
+// participants — we do NOT use the Auth.js Prisma adapter, so there are no
+// Account / Session / VerificationToken tables. If we later switch to the
+// adapter + database sessions, add those back.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Prisma 7: connection URL lives in prisma.config.ts, not here.
+}
+
+model User {
+  id        String   @id @default(cuid())
+  spotifyId String   @unique
+  name      String?
+  email     String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  participants BlendParticipant[]
+  snapshots    UserTasteSnapshot[]
+}
+
+enum BlendType {
+  pair
+  group
+}
+
+enum BlendStatus {
+  pending // waiting on participants to connect
+  ready // everyone in, not yet generated
+  generated // track list + name computed
+  pushed // real Spotify playlist created
+}
+
+model Blend {
+  id                String      @id @default(cuid())
+  type              BlendType
+  status            BlendStatus @default(pending)
+  inviteCode        String      @unique
+  generatedName     String?
+  spotifyPlaylistId String?
+  compatibility     Int? // 0-100 headline score
+  analysis          Json? // headline, dimensions, connections, bridges, sharedArtists/genres
+  pack              String? // album-aesthetic theme id, e.g. "midnight"
+  coverStyle        String? // cover composition id, e.g. "lens"
+  playlistCollaborative Boolean @default(false) // Spotify playlist open for both to edit
+
+  participants BlendParticipant[]
+  tracks       BlendTrack[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BlendParticipant {
+  id       String   @id @default(cuid())
+  blendId  String
+  userId   String
+  isOwner  Boolean  @default(false)
+  joinedAt DateTime @default(now())
+
+  blend Blend @relation(fields: [blendId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([blendId, userId])
+}
+
+model BlendTrack {
+  id             String  @id @default(cuid())
+  blendId        String
+  spotifyTrackId String
+  name           String
+  artists        String // comma-joined display string
+  matchReason    String // structural: why this track got picked
+  vibe           String? // 2-3 word personality tag, e.g. "Tender deep cut"
+  lean           String? // "a" | "b" | "both" — whose taste it leans toward
+  albumArt       String? // Spotify album cover URL (i.scdn.co, ~300px)
+  position       Int
+
+  blend Blend @relation(fields: [blendId], references: [id], onDelete: Cascade)
+
+  @@unique([blendId, spotifyTrackId])
+}
+
+// Cached per-user taste data so we don't re-hit Spotify rate limits every
+// page load. No audio-feature averages — that endpoint is dead for new apps
+// (see 06-Decision-Log 2026-08-29). The blend works off genres / artist &
+// track overlap / popularity / release era.
+model UserTasteSnapshot {
+  id         String   @id @default(cuid())
+  userId     String
+  timeRange  String   @default("medium_term") // short_term | medium_term | long_term
+  topTracks  Json // [{ id, name, artists, popularity, albumReleaseDate }]
+  topArtists Json // [{ id, name, genres, popularity }]
+  genres     Json // aggregated genre -> weight map
+  eras       Json // decade -> count histogram
+  fetchedAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, timeRange])
+}
