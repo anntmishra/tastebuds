@@ -12,7 +12,13 @@ export type PackId =
   | "sunburn"
   | "onyx"
   | "neon"
-  | "rust";
+  | "rust"
+  | "ember"
+  | "frost"
+  | "gold"
+  | "cobalt"
+  | "moss"
+  | "plum";
 
 export type PackSwatch = { bg: string; accent: string; fg: string };
 
@@ -34,6 +40,12 @@ export const PACKS: {
   { id: "sunburn", name: "Sunburn", note: "warm coral", swatch: { bg: "#170f0b", accent: "#ff6f52", fg: "#f7e9e2" } },
   { id: "rust", name: "Rust", note: "worn americana", swatch: { bg: "#150e09", accent: "#d47a3e", fg: "#efe2d0" } },
   { id: "onyx", name: "Onyx", note: "elegant, serif", swatch: { bg: "#000000", accent: "#f0ece2", fg: "#f0ece2" } },
+  { id: "ember", name: "Ember", note: "cinematic red", swatch: { bg: "#150807", accent: "#ff5a3c", fg: "#f6e7e0" } },
+  { id: "frost", name: "Frost", note: "glacial ice-blue", swatch: { bg: "#0a0f14", accent: "#a9d6ff", fg: "#eef4f8" } },
+  { id: "gold", name: "Gold", note: "black & gold, luxe", swatch: { bg: "#000000", accent: "#e8c56a", fg: "#f3ecdb" } },
+  { id: "cobalt", name: "Cobalt", note: "electric klein blue", swatch: { bg: "#05070f", accent: "#3a5bff", fg: "#e9ecf7" } },
+  { id: "moss", name: "Moss", note: "earthy, forest", swatch: { bg: "#0c1109", accent: "#9bb545", fg: "#e9efe0" } },
+  { id: "plum", name: "Plum", note: "moody violet pop", swatch: { bg: "#12081a", accent: "#c65cff", fg: "#f0e6f5" } },
 ];
 
 export function packSwatch(id: string | null | undefined): PackSwatch {
@@ -90,6 +102,12 @@ export function resolvePack(
     onyx: 0,
     neon: 0,
     rust: 0,
+    ember: 0,
+    frost: 0,
+    gold: 0,
+    cobalt: 0,
+    moss: 0,
+    plum: 0,
   };
 
   // mood → pack
@@ -107,6 +125,14 @@ export function resolvePack(
   if (has(mood, "weightless")) score.concrete += 3;
   if (has(mood, "heavy", "feral", "wounded")) score.midnight += 3;
   if (has(mood, "sweaty")) score.neon += 2;
+  if (has(mood, "cinematic", "brooding", "smouldering", "smoldering", "aching"))
+    score.ember += 3;
+  if (has(mood, "icy", "glassy", "crystalline", "frozen", "still"))
+    score.frost += 3;
+  if (has(mood, "opulent", "plush", "nocturnal")) score.gold += 2;
+  if (has(mood, "electric", "wired", "neon-lit")) score.cobalt += 3;
+  if (has(mood, "earthy", "rustic", "overgrown", "grounded")) score.moss += 3;
+  if (has(mood, "lurid", "woozy", "iridescent")) score.plum += 3;
 
   // shared genres → pack
   if (has(genres, "house", "techno", "edm", "trance", "hardstyle"))
@@ -121,6 +147,17 @@ export function resolvePack(
   if (has(genres, "pop", "hyperpop")) score.sunburn += 2;
   if (has(genres, "punk", "hardcore", "metal")) score.chrome += 2;
   if (has(genres, "phonk", "trap", "drill", "cloud rap")) score.chrome += 2;
+  if (has(genres, "soundtrack", "score", "post-rock", "cinematic", "emo"))
+    score.ember += 3;
+  if (has(genres, "ambient", "modern classical", "ethereal wave", "icelandic"))
+    score.frost += 3;
+  if (has(genres, "jazz", "soul", "bossa", "lounge", "swing")) score.gold += 3;
+  if (has(genres, "synthwave", "new wave", "electropop", "synthpop", "italo"))
+    score.cobalt += 3;
+  if (has(genres, "folk", "indie folk", "chamber", "freak folk", "alt-country"))
+    score.moss += 3;
+  if (has(genres, "hyperpop", "art pop", "alt pop", "glitch pop", "pc music"))
+    score.plum += 3;
 
   // profile modifiers
   if (compatibility >= 88) score.onyx += 4; // "same person" → unity

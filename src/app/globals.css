@@ -524,6 +524,171 @@ body::after {
   --dur: 380ms;
 }
 
+[data-pack="ember"] {
+  --hero-glow: 0 0 34px color-mix(in srgb, var(--accent) 40%, transparent);
+  --bg: #150807;
+  --surface: #21100d;
+  --surface-2: #2c1712;
+  --fg: #f6e7e0;
+  --fg-muted: #b79a90;
+  --fg-faint: #7d655d;
+  --border: rgba(246, 231, 224, 0.12);
+  --border-strong: rgba(246, 231, 224, 0.26);
+  --accent: #ff5a3c;
+  --accent-press: #ec4327;
+  --accent-fg: #150807;
+  --accent-tint: rgba(255, 90, 60, 0.15);
+  --accent-2: #ffb14e;
+  --accent-3: #d1416a;
+  --font-display-family: var(--font-serif);
+  --display-weight: 400;
+  --display-tracking: 0;
+  --display-transform: none;
+  --pack-glow: rgba(255, 90, 60, 0.13);
+  --r-card: 14px;
+  --texture-opacity: 0.06;
+  --aurora-opacity: 0.1;
+  --dur: 300ms;
+}
+
+[data-pack="frost"] {
+  --hero-glow: 0 0 24px color-mix(in srgb, var(--accent) 30%, transparent);
+  --bg: #0a0f14;
+  --surface: #121a22;
+  --surface-2: #1a242e;
+  --fg: #eef4f8;
+  --fg-muted: #9aabb6;
+  --fg-faint: #5e6f7a;
+  --border: rgba(238, 244, 248, 0.1);
+  --border-strong: rgba(238, 244, 248, 0.22);
+  --accent: #a9d6ff;
+  --accent-press: #8fc4f2;
+  --accent-fg: #0a0f14;
+  --accent-tint: rgba(169, 214, 255, 0.12);
+  --accent-2: #cfe6f5;
+  --accent-3: #7fb0d8;
+  --font-display-family: var(--font-bricolage);
+  --display-weight: 500;
+  --display-tracking: -0.01em;
+  --display-transform: none;
+  --r-card: 18px;
+  --texture-opacity: 0.035;
+  --aurora-opacity: 0.05;
+  --dur: 280ms;
+}
+
+[data-pack="gold"] {
+  --hero-glow: 0 0 28px color-mix(in srgb, var(--accent) 38%, transparent);
+  --bg: #000000;
+  --surface: #0c0a05;
+  --surface-2: #16130a;
+  --fg: #f3ecdb;
+  --fg-muted: #aaa088;
+  --fg-faint: #6f6752;
+  --border: rgba(243, 236, 219, 0.12);
+  --border-strong: rgba(243, 236, 219, 0.28);
+  --accent: #e8c56a;
+  --accent-press: #d4b055;
+  --accent-fg: #000000;
+  --accent-tint: rgba(232, 197, 106, 0.14);
+  --accent-2: #d99a4e;
+  --accent-3: #b6b6bd;
+  --font-display-family: var(--font-serif);
+  --display-weight: 400;
+  --display-tracking: 0;
+  --display-transform: none;
+  --pack-glow: rgba(232, 197, 106, 0.1);
+  --r-card: 16px;
+  --texture-opacity: 0.05;
+  --aurora-opacity: 0.06;
+  --dur: 300ms;
+}
+
+[data-pack="cobalt"] {
+  --hero-glow: 0 0 30px color-mix(in srgb, var(--accent) 45%, transparent);
+  --bg: #05070f;
+  --surface: #0c1020;
+  --surface-2: #141a30;
+  --fg: #e9ecf7;
+  --fg-muted: #9299b3;
+  --fg-faint: #575e7a;
+  --border: rgba(58, 91, 255, 0.18);
+  --border-strong: rgba(58, 91, 255, 0.44);
+  --accent: #3a5bff;
+  --accent-press: #2f4be8;
+  --accent-fg: #ffffff;
+  --accent-tint: rgba(58, 91, 255, 0.16);
+  --accent-2: #12d0ff;
+  --accent-3: #b64cff;
+  --font-display-family: var(--font-oswald);
+  --display-weight: 600;
+  --display-tracking: 0.03em;
+  --display-transform: uppercase;
+  --r-btn: 3px;
+  --r-card: 5px;
+  --r-pill: 3px;
+  --r-input: 3px;
+  --texture: linear-gradient(rgba(58, 91, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(58, 91, 255, 0.05) 1px, transparent 1px);
+  --texture-opacity: 0.5;
+  --texture-size: 36px 36px;
+  --aurora-opacity: 0.08;
+  --dur: 130ms;
+}
+
+[data-pack="moss"] {
+  --hero-glow: none;
+  --bg: #0c1109;
+  --surface: #141b10;
+  --surface-2: #1d2617;
+  --fg: #e9efe0;
+  --fg-muted: #a0ab93;
+  --fg-faint: #66715a;
+  --border: rgba(233, 239, 224, 0.11);
+  --border-strong: rgba(233, 239, 224, 0.24);
+  --accent: #9bb545;
+  --accent-press: #88a138;
+  --accent-fg: #0c1109;
+  --accent-tint: rgba(155, 181, 69, 0.15);
+  --accent-2: #d9b45c;
+  --accent-3: #5e9a6b;
+  --font-display-family: var(--font-bricolage);
+  --display-weight: 600;
+  --display-tracking: -0.02em;
+  --display-transform: none;
+  --r-card: 18px;
+  --texture-opacity: 0.06;
+  --aurora-opacity: 0.05;
+  --dur: 300ms;
+}
+
+[data-pack="plum"] {
+  --hero-glow: 0 0 30px color-mix(in srgb, var(--accent) 42%, transparent);
+  --bg: #12081a;
+  --surface: #1d1029;
+  --surface-2: #281838;
+  --fg: #f0e6f5;
+  --fg-muted: #b09bbc;
+  --fg-faint: #786280;
+  --border: rgba(240, 230, 245, 0.12);
+  --border-strong: rgba(240, 230, 245, 0.26);
+  --accent: #c65cff;
+  --accent-press: #b246ec;
+  --accent-fg: #12081a;
+  --accent-tint: rgba(198, 92, 255, 0.16);
+  --accent-2: #ff5cc8;
+  --accent-3: #6c7bff;
+  --font-display-family: var(--font-bricolage);
+  --display-weight: 600;
+  --display-tracking: -0.02em;
+  --display-transform: none;
+  --pack-glow: rgba(198, 92, 255, 0.12);
+  --r-card: 16px;
+  --texture-opacity: 0.05;
+  --aurora-opacity: 0.09;
+  --dur: 260ms;
+}
+
 /* ═══ MOTION ══════════════════════════════════════════════════════════ */
 
 @keyframes fade-up {

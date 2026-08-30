@@ -7,15 +7,29 @@ import { PackTheme } from "@/components/pack-theme";
 import { Mark } from "@/components/wordmark";
 
 // A tour of the aesthetics, not the full set.
-const TOUR = ["studio", "midnight", "citrus", "velvet", "neon", "static", "sunburn"] as const;
+const TOUR = [
+  "studio",
+  "midnight",
+  "ember",
+  "velvet",
+  "neon",
+  "frost",
+  "plum",
+  "gold",
+  "static",
+  "cobalt",
+] as const;
 const LABEL: Record<string, string> = {
   studio: "Studio",
   midnight: "Midnight",
-  citrus: "Citrus",
+  ember: "Ember",
   velvet: "Velvet",
   neon: "Neon",
+  frost: "Frost",
+  plum: "Plum",
+  gold: "Gold",
   static: "Static",
-  sunburn: "Sunburn",
+  cobalt: "Cobalt",
 };
 
 export function LandingHero() {
