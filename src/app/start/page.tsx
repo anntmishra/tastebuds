@@ -6,6 +6,7 @@ import { connectSpotify, createPairBlend, disconnect } from "@/app/actions";
 import { BlendList } from "@/components/blend-list";
 import { GhostButton, PrimaryButton } from "@/components/button";
 import { TasteSummary } from "@/components/taste-summary";
+import { ThemeMenu } from "@/components/theme-menu";
 import { Wordmark } from "@/components/wordmark";
 import { prisma } from "@/lib/prisma";
 import { SpotifyAuthError } from "@/lib/spotify";
@@ -53,11 +54,14 @@ export default async function StartPage() {
 
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-5xl flex-1 flex-col px-6 sm:px-10">
-      <header className="flex items-center justify-between pt-6 sm:pt-8">
+      <header className="flex items-center justify-between gap-4 pt-6 sm:pt-8">
         <Wordmark />
-        <form action={disconnect}>
-          <GhostButton type="submit">Sign out</GhostButton>
-        </form>
+        <div className="flex items-center gap-4">
+          <ThemeMenu />
+          <form action={disconnect}>
+            <GhostButton type="submit">Sign out</GhostButton>
+          </form>
+        </div>
       </header>
 
       <main className="flex flex-1 items-start py-12 sm:py-16">

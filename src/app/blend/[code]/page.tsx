@@ -6,6 +6,7 @@ import { BlendReveal } from "@/components/blend-reveal";
 import { PrimaryButton } from "@/components/button";
 import { CopyButton } from "@/components/copy-button";
 import { PackTheme } from "@/components/pack-theme";
+import { ThemeMenu } from "@/components/theme-menu";
 import { WaitingMarks } from "@/components/waiting-marks";
 import { Wordmark } from "@/components/wordmark";
 import type { StoredBlendAnalysis } from "@/lib/blend-algo";
@@ -22,15 +23,18 @@ function Shell({
   children,
   top = false,
   wide = false,
+  themeMenu = true,
 }: {
   children: React.ReactNode;
   top?: boolean;
   wide?: boolean;
+  themeMenu?: boolean;
 }) {
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-5xl flex-1 flex-col px-6 sm:px-10">
-      <header className="pt-6 sm:pt-8">
+      <header className="flex items-center justify-between gap-4 pt-6 sm:pt-8">
         <Wordmark />
+        {themeMenu && <ThemeMenu />}
       </header>
       <main
         className={
@@ -163,7 +167,7 @@ export default async function BlendRoomPage({
     return (
       <div data-pack={pack === "studio" ? undefined : pack}>
         <PackTheme pack={pack} />
-        <Shell top wide>
+        <Shell top wide themeMenu={false}>
           <BlendReveal
             code={code}
             pack={pack}

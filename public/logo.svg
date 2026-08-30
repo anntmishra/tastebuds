@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268 64" fill="none">
+  <defs>
+    <clipPath id="lens"><circle cx="42" cy="28" r="18"/></clipPath>
+  </defs>
+  <path d="M35 46 v9" stroke="#0a0a0d" stroke-width="3.6" stroke-linecap="round"/>
+  <circle cx="35" cy="56" r="4.4" fill="#7c7cff"/>
+  <circle cx="28" cy="28" r="18" stroke="#0a0a0d" stroke-width="3.6"/>
+  <circle cx="42" cy="28" r="18" stroke="#0a0a0d" stroke-width="3.6"/>
+  <g clip-path="url(#lens)"><circle cx="28" cy="28" r="18" fill="#7c7cff"/></g>
+  <text x="80" y="41" font-family="'Bricolage Grotesque', Verdana, sans-serif" font-size="29" font-weight="700" fill="#0a0a0d" letter-spacing="-0.5">Taste Buds</text>
+</svg>

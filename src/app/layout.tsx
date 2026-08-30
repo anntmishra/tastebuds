@@ -6,6 +6,7 @@ import {
   JetBrains_Mono,
   Oswald,
 } from "next/font/google";
+import { ThemePref, themePrefScript } from "@/components/theme-pref";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -58,7 +59,11 @@ export default function RootLayout({
         "h-full antialiased",
       ].join(" ")}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themePrefScript }} />
+      </head>
       <body className="relative z-[1] flex min-h-full flex-col">
+        <ThemePref />
         <div className="tb-aurora" aria-hidden />
         {children}
       </body>
