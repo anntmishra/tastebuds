@@ -1,10 +1,29 @@
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { Resvg } from "@resvg/resvg-js";
 import sharp from "sharp";
 import { coverStyleOrDefault } from "@/lib/cover-styles";
+import { OSWALD_TTF_BASE64 } from "@/lib/fonts/oswald-data";
 import { packSwatch } from "@/lib/packs";
 
 /** Spotify's PUT .../images caps the *base64* payload at 256 KB, so the raw
  *  JPEG must land under ~190 KB. */
 const MAX_JPEG_BYTES = 185_000;
+
+/**
+ * resvg-js 2.6 only takes font *file paths*, not buffers, and Vercel ships no
+ * system fonts — so materialise the bundled base64 Oswald to a temp file once
+ * per process and point resvg at it. Without this, every glyph renders as tofu.
+ */
+let fontPath: string | null = null;
+function ensureFont(): string {
+  if (fontPath) return fontPath;
+  const p = join(mkdtempSync(join(tmpdir(), "tb-font-")), "Oswald.ttf");
+  writeFileSync(p, Buffer.from(OSWALD_TTF_BASE64, "base64"));
+  fontPath = p;
+  return p;
+}
 
 type Palette = {
   bg: string;
@@ -39,7 +58,7 @@ function wrap(name: string, limit = 12): string[] {
   return lines.filter(Boolean);
 }
 
-/** Fetch an album-art URL and return it as a data: URI sharp can embed. */
+/** Fetch an album-art URL and return it as a data: URI resvg can embed. */
 async function inlineImage(url: string): Promise<string | null> {
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
@@ -53,7 +72,7 @@ async function inlineImage(url: string): Promise<string | null> {
   }
 }
 
-const F = `font-family="Oswald, 'Arial Narrow', system-ui, sans-serif" font-weight="700"`;
+const F = `font-family="Oswald" font-weight="700"`;
 
 function mosaic(imgs: string[], opacity = 1): string {
   if (imgs.length === 0) return "";
@@ -128,7 +147,7 @@ function body(
       return `<g clip-path="url(#sq)"><rect width="400" height="400" fill="${C.accent}"/>${L.map((l, i) => `<text x="24" y="${200 + i * 62 - (L.length - 1) * 31}" fill="${C.accentFg}" ${F} font-size="66" letter-spacing="-2">${esc(l)}</text>`).join("")}<text x="24" y="52" fill="${C.accentFg}" ${F} font-size="18" letter-spacing="3.2" opacity="0.75">TASTE BUDS</text><text x="376" y="384" text-anchor="end" fill="${C.accentFg}" ${F} font-size="22" opacity="0.85">${score}/100</text></g>`;
 
     case "minimal":
-      return `<g clip-path="url(#sq)"><rect width="400" height="400" fill="${C.bg}"/><circle cx="200" cy="150" r="9" fill="${C.accent}"/>${L.map((l, i) => `<text x="200" y="${210 + i * 30 - (L.length - 1) * 15}" text-anchor="middle" fill="${C.fg}" ${F} font-size="28" letter-spacing="-1">${esc(l)}</text>`).join("")}<text x="200" y="300" text-anchor="middle" fill="${C.fg}" ${F} font-size="14" letter-spacing="2.8" opacity="0.5">TASTE BUDS · ${score}/100</text></g>`;
+      return `<g clip-path="url(#sq)"><rect width="400" height="400" fill="${C.bg}"/><circle cx="200" cy="150" r="9" fill="${C.accent}"/>${L.map((l, i) => `<text x="200" y="${210 + i * 30 - (L.length - 1) * 15}" text-anchor="middle" fill="${C.fg}" ${F} font-size="28" letter-spacing="-1">${esc(l)}</text>`).join("")}<text x="200" y="300" text-anchor="middle" fill="${C.fg}" ${F} font-size="14" letter-spacing="2.8" opacity="0.5">TASTE BUDS &#183; ${score}/100</text></g>`;
 
     case "lens":
     default:
@@ -148,7 +167,8 @@ type Args = {
  * Render the same designed cover we show in-app to a square JPEG for Spotify's
  * playlist artwork. Built as a plain SVG string (not the React component —
  * Next forbids react-dom/server in the app graph); the active pack's palette
- * is baked to concrete hex and the rasteriser falls back to its default sans.
+ * is baked to concrete hex. Rasterised with resvg-js + a bundled Oswald so
+ * text renders on hosts with no system fonts; sharp only does PNG→JPEG.
  * Returns a JPEG Buffer or null if it can't be produced.
  */
 export async function renderCoverJpeg(args: Args): Promise<Buffer | null> {
@@ -176,13 +196,30 @@ export async function renderCoverJpeg(args: Args): Promise<Buffer | null> {
     body(coverStyleOrDefault(args.style), L, Math.round(args.score) || 0, inlined, C) +
     `</svg>`;
 
+  let png: Buffer;
+  try {
+    const resvg = new Resvg(svg, {
+      fitTo: { mode: "width", value: 640 },
+      background: bg,
+      font: {
+        fontFiles: [ensureFont()],
+        loadSystemFonts: false,
+        defaultFontFamily: "Oswald",
+      },
+    });
+    png = Buffer.from(resvg.render().asPng());
+  } catch (err) {
+    console.error("[cover-raster] resvg failed:", err);
+    return null;
+  }
+
   for (const [q, size] of [
     [82, 640],
     [70, 640],
     [58, 600],
     [45, 512],
   ] as const) {
-    const out = await sharp(Buffer.from(svg))
+    const out = await sharp(png)
       .resize(size, size, { fit: "cover" })
       .jpeg({ quality: q, mozjpeg: true })
       .toBuffer();

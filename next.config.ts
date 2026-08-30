@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   // Repo lives under the home dir; pin the workspace root so Turbopack
   // doesn't walk up to ~ and ignore this project's package-lock.json.
   turbopack: { root: __dirname },
+  // Native addon — must stay external, Turbopack can't bundle the .node binary.
+  serverExternalPackages: ["@resvg/resvg-js"],
   images: {
     remotePatterns: [
       // Spotify profile images
